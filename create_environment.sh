@@ -91,6 +91,25 @@ ASSIGNMENT="Shell Navigation"
 DAYS_REMAINING=2
 END
 
+#startup.sh
+cat <<END > $submission_dir/startup.sh
+#!/bin/bash
+
+#This gets the full working directory and returns back to directory where the file is.
+cd "$(dirname "$0")"
+
+#Look for all the files in the directory and it's subdirectories that has .sh extension and make them executable
+find . -type f -name "*.sh" -exec chmod +x {} \;
+
+echo " "
+echo "Starting the reminder app...."
+
+#Executing the reminder.sh script from the startup.sh script
+./app/reminder.sh
+END
+
+#Makes the startup.sh file executable
+chmod +x "$submission_dir/startup.sh"
 
 #Make this "submission_reminder_nameentered" and all of its content automatic created for every user who enters their name.
 

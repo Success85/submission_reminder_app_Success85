@@ -2,32 +2,24 @@
 
 # Creating assignment reminder app. This script creates the directory structure.
 
-#The pseudocode/steps:
+#Prompt user(student) to enter their name
+read -p "What is your name: " yourname
 
-#Prompt user(student) to enter their name 
-read -p "Enter you name:" yourname
-echo $yourname
-#Create directory named (submission_reminder_nameentered) for every user that enters his/her name
-mkdir -p "submission_reminder_$yourname"
-submission_dir="./submission_reminder_$yourname"
+echo "Starting reminder app environment...."
 
-#Creating the required subdirectories if they doesn't exist
-mkdir -p "$submission_dir/app"
-mkdir -p "$submission_dir/modules"
-mkdir -p "$submission_dir/assets"
-mkdir -p "$submission_dir/config"
+submission_dir="submission_reminder_$yourname"
 
-#Creating required files for each of the directories both the main directory and the subdirectories
-touch "$submission_dir/app/reminder.sh"
-touch "$submission_dir/modules/functions.sh"
-touch "$submission_dir/assets/submissions.txt"
-touch "$submission_dir/config/config.env"
-touch "$submission_dir/startup.sh"
+mkdir -p ./$submission_dir
 
-#Copy the code from the attached files and paste in the files created.
+mkdir -p ./$submission_dir/app
+mkdir -p ./$submission_dir/modules
+mkdir -p ./$submission_dir/assets
+mkdir -p ./$submission_dir/config
 
+#Creating required files for each of the directories both the main directory and the subdir
+#The cat << END syntax is used to easily write multiline documents within another script
 #reminder.sh file
-cat <<END > $submission_dir/app/reminder.sh
+cat << 'END' > ./$submission_dir/app/reminder.sh
 #!/bin/bash
 
 # Source environment variables and helper functions
@@ -43,10 +35,10 @@ echo "Days remaining to submit: $DAYS_REMAINING days"
 echo "--------------------------------------------"
 
 check_submissions $submissions_file
+
 END
 
-#modules/functions.sh
-cat <<END > $submission_dir/modules/functions.sh
+cat << 'END' > ./$submission_dir/modules/functions.sh
 #!/bin/bash
 
 # Function to read submissions file and output students who have not submitted
@@ -67,57 +59,50 @@ function check_submissions {
         fi
     done < <(tail -n +2 "$submissions_file") # Skip the header
 }
-
 END
 
-#assets/submission.txt
-cat <<END > $submission_dir/assets/submissions.txt
+
+#Creating assets/submission.txt file
+cat << 'END' > ./$submission_dir/assets/submissions.txt
 student, assignment, submission status
 Chinemerem, Shell Navigation, not submitted
 Chiagoziem, Git, submitted
 Divine, Shell Navigation, not submitted
-Anissa, Shell Basics, submitted
-Keza, Python Basics, submitted
-Tobi, Python Loops, not submitted
-Chidera, Python functions, not submitted
-Charity, SQL Basics, submitted
-Ayobami, Java, not submitted
+Paul, Git, not submitted
+Lizzy, Python, submitted
+Grace, vi, not submitted
+Irene, emacs, submitted
+Ambrose, Shell Basics, not submitted
 END
 
-#config/config.env
-cat <<END > $submission_dir/config/config.env
+
+#Creating config.env file in the config folder
+cat << 'END' > ./$submission_dir/config/config.env
 # This is the config file
 ASSIGNMENT="Shell Navigation"
 DAYS_REMAINING=2
 END
 
-#startup.sh
-cat <<END > $submission_dir/startup.sh
+
+#Creating startup.sh file
+cat << 'END' > ./$submission_dir/startup.sh
 #!/bin/bash
+#The condition created below checks if all the necessary files in the environment exists.
 
-#This gets the full working directory and returns back to directory where the file is.
-cd "$(dirname "$0")"
+if [ -f ./app/reminder.sh ] && [ -f ./modules/functions.sh ] && [ -f ./config/config.env ] && [ -f ./assets/submissions.txt ]; then
+        ./app/reminder.sh
 
-#Look for all the files in the directory and it's subdirectories that has .sh extension and make them executable
-find . -type f -name "*.sh" -exec chmod +x {} \;
+else
+        echo "Your Environment is incomplete."
+        echo "Please delete your current environment and create a new one"
+fi
 
-echo " "
-echo "Starting the reminder app...."
-
-#Executing the reminder.sh script from the startup.sh script
-./app/reminder.sh
 END
 
-#Makes the startup.sh file executable
-chmod +x "$submission_dir/startup.sh"
+#Look for all the files in the directory and it's subdirectories that has .sh extension and make them executable
+find ./$submission_dir -type f -name "*.sh" -exec chmod +x {} \;
+#The above command recursively grants execute permissions to all shell scripts in the environment and its sub directories.
 
-#Make this "submission_reminder_nameentered" and all of its content automatic created for every user who enters their name.
+echo "Your environment has been created successfully!"
 
-#Make the startup.sh file executable
 
-#And startup makes all other files with .sh extension executable
-
-#Add at least 5 users for better functionality testing.
-
-#Over to the copilot_shell_script.sh to continue...
-#.
